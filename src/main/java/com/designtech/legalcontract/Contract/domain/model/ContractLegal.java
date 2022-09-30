@@ -14,6 +14,8 @@ import lombok.*;
 @NoArgsConstructor
 public class ContractLegal extends AuditModel{
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
