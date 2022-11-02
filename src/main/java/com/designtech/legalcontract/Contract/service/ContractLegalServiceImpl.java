@@ -7,78 +7,85 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import com.designtech.legalcontract.External.services.LegizClient;
+import com.designtech.legalcontract.External.services.LegizLawyer;
 import com.designtech.legalcontract.Contract.domain.model.ContractLegal;
+import com.designtech.legalcontract.Contract.domain.repository.ContractLegalRepository;
 import com.designtech.legalcontract.Contract.domain.service.ContractLegalService;
 import com.designtech.legalcontract.External.domain.model.Client;
 import com.designtech.legalcontract.External.domain.model.Lawyer;
+import com.designtech.legalcontract.exception.ResourceNotFoundException;
 
 @Service
 public class ContractLegalServiceImpl implements ContractLegalService {
 
-	private final RestTemplate restTemplate;
+	private final LegizClient legizClient;
 
-	@Value("${lawyerApi}")
-	private String lawyerApi;
-	@Value("${clientApi}")
-	private String clientApi;
+	private final LegizLawyer legizLawyer;
 
+	private final ContractLegalRepository contractLegalRepository;
+	
 	@Autowired
-	public ContractLegalServiceImpl(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
+	public ContractLegalServiceImpl(LegizClient legizClient,LegizLawyer legizLawyer, ContractLegalRepository contractLegalRepository) {
+		this.legizClient = legizClient;
+		this.legizLawyer = legizLawyer;
+		this.contractLegalRepository = contractLegalRepository;
 	}
 
 	@Override
-	public ContractLegal createContratLegal(Long clientId, Long laywerId, ContractLegal contractLegal) {
-
-		Client client = restTemplate.getForObject(clientApi, Client.class);
-		Lawyer lawyer = restTemplate.getForObject(lawyerApi, Lawyer.class);
-
-
-
-		contractLegal = new ContractLegal();
-		contractLegal.setClientId(clientId); //TODO, VALIDATE CLIENT ID WITH CLIENT OBJECT
-		contractLegal.setLawyerId(laywerId); //TODO, VALIDATE LAWYER ID WITH LAWYER OBJECT
-
-		return contractLegal;
+	public ContractLegal createContractLegal(Long clientId, Long lawyerId, ContractLegal contractLegal) {
+		if(!legizClient.existById(clientId))
+			 throw new ResourceNotFoundException("Client","Id",clientId);
+		
+		if(!legizLawyer.existById(lawyerId))
+			 throw new ResourceNotFoundException("Lawyer","Id",lawyerId);
+		contractLegal.setClientId(clientId);
+		contractLegal.setLawyerId(lawyerId);		
+		return contractLegalRepository.save(contractLegal);
 	}
 
 	@Override
-	public ContractLegal updateContratLegal(Long clientId, Long laywerId, Long contratLegalId,
-			ContractLegal contratLegalRequest) {
+	public ContractLegal updateContractLegal(Long clientId, Long laywerId, Long contratLegalId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ResponseEntity<?> deleteContratLegal(Long clientId, Long laywerId, Long contratLegalId) {
+	public ResponseEntity<?> deleteContractLegal(Long clientId, Long laywerId, Long contratLegalId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Page<ContractLegal> getAllContratLegalByClientId(Long clientId, Pageable pageable) {
+	public Page<ContractLegal> getAllContractLegalByClientId(Long clientId, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Page<ContractLegal> getAllContratLegalByLawyerId(Long laywerId, Pageable pageable) {
+	public Page<ContractLegal> getAllContractLegalByLawyerId(Long laywerId, Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Page<ContractLegal> getAllContratLegalByClientIdAndLawyerId(Long clientId, Long laywerId,
+	public Page<ContractLegal> getAllContractLegalByClientIdAndLawyerId(Long clientId, Long laywerId,
 			Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Page<ContractLegal> getAllContratLegal(Pageable pageable) {
+	public Page<ContractLegal> getAllContractLegal(Pageable pageable) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ContractLegal getContractLegalById(Long contractLegalId) {
+		ContractLegal contractLegal = contractLegalRepository.findById(contractLegalId)
+				.orElseThrow(() -> new ResourceNotFoundException("ContractLegal","Id",contractLegalId));
+		return contractLegal;
 	}
 
 }
