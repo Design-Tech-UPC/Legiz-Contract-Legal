@@ -7,11 +7,12 @@ import org.springframework.http.ResponseEntity;
 import com.designtech.legalcontract.Contract.domain.model.ContractLegal;
 
 public interface ContractLegalService {
-	ContractLegal createContratLegal(Long clientId, Long laywerId, ContractLegal contratLegal);
-	ContractLegal updateContratLegal(Long clientId, Long laywerId, Long contratLegalId, ContractLegal contratLegalRequest);
-    ResponseEntity<?> deleteContratLegal(Long clientId, Long laywerId, Long contratLegalId);
-    Page<ContractLegal> getAllContratLegalByClientId(Long clientId, Pageable pageable);
-    Page<ContractLegal> getAllContratLegalByLawyerId(Long laywerId, Pageable pageable);
-    Page<ContractLegal> getAllContratLegalByClientIdAndLawyerId(Long clientId, Long laywerId, Pageable pageable);
-    Page<ContractLegal> getAllContratLegal(Pageable pageable);
+	ContractLegal createContractLegal(Long clientId, Long laywerId, ContractLegal contractLegal);
+	ContractLegal updateContractLegal(Long clientId, Long laywerId, Long contratLegalId, ContractLegal contractLegal);
+    ResponseEntity<?> deleteContractLegal(Long clientId, Long laywerId, Long contratLegalId);
+    Page<ContractLegal> getAllContractLegalByClientId(Long clientId, Pageable pageable);
+    Page<ContractLegal> getAllContractLegalByLawyerId(Long laywerId, Pageable pageable);
+    Page<ContractLegal> getAllContractLegalByClientIdAndLawyerId(Long clientId, Long laywerId, Pageable pageable);
+    Page<ContractLegal> getAllContractLegal(Pageable pageable);
+    ContractLegal getContractLegalById(Long contractLegalId);
 }
